@@ -1,0 +1,24 @@
+language: node_js
+sudo: true
+node_js: 4
+before_install: if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
+script:
+- npm run lint
+- NODE_ENV=production npm run build
+env:
+  global:
+  - CF_APP=similarity-search-demo
+  - CF_API=https://api.ng.bluemix.net
+  - CF_ORGANIZATION=WatsonPlatformServices
+  - CF_SPACE=demos
+before_deploy: npm install -g cf-blue-green
+deploy:
+  provider: script
+  script:
+    - cf-blue-green-travis
+  on:
+    branch: master
+    repo: watson-developer-cloud/similarity-search-nodejs
+  skip_cleanup: true
+notifications:
+  email: false

@@ -1,0 +1,9 @@
+declared-services:
+  visual-recognition-service:
+    label: watson_vision_combined
+    plan: free
+applications:
+- name: similarity-search-demo
+  command: npm start
+  path: .
+  memory: 512M
