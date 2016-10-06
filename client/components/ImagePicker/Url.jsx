@@ -31,7 +31,7 @@ const InputImageUrl = React.createClass({
         value={this.state.url}
         onChange={this.handleInputChange}
         onKeyPress={this.handleKeyPress}
-        placeholder="Parse an image URL"
+        placeholder="Paste an image URL"
         className="input--url-input base--input"
       />
     );
