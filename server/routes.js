@@ -22,6 +22,11 @@ const visualRecognition = new VisualRecognition({
   path: { collection_id: process.env.COLLECTION_ID },
 });
 
+const removeDuplicates = (images) =>
+  images.filter((elem, index, self) =>
+    index === self.map((image) =>
+      image.metadata.image_link).indexOf(elem.metadata.image_link)
+  );
 /**
  * Parse the required parameters for find_similar
  * When using a 'url', the app will download the image locally and send the image file
@@ -101,7 +106,9 @@ router.post('/api/find_similar', upload.single('image'), (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.json(data);
+      const result = data;
+      result.similar_images = removeDuplicates(data.similar_images);
+      return res.json(result);
     });
   });
 });
