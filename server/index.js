@@ -28,7 +28,11 @@ app.set('views', path.join(__dirname, 'views'));
 // and some other features around security
 if (process.env.VCAP_APPLICATION) {
   app.use(secure());
-  app.use(helmet());
+  app.use(helmet({
+    cacheControl: false,
+    frameguard: false,
+  }));
+
   app.use('/api/', rateLimit({
     windowMs: 30000, // seconds
     delayMs: 0,
