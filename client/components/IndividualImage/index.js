@@ -102,8 +102,13 @@ const IndividualImage = React.createClass({
                   </div>
                   <div className="individual-item--data">
                     <h3 className="base--h3 individual-item--header">
-                      Similarity Score
-                      {/* <a href="" className="base--a individual-item--header-link">Score</a> */}
+                      Similarity
+                      <a
+                        href="http://www.ibm.com/watson/developercloud/doc/visual-recognition/understand-scores.shtml"
+                        className="base--a individual-item--header-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >Score</a>
                     </h3>
                     <div className="individual-item--graph">
                       <div className="individual-item--graph-bar">
