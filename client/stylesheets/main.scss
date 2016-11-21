@@ -408,6 +408,10 @@ $tile-padding: 0.2rem;
     margin-right: get('rhythm') / 2;
     margin-top: 0rem;
   }
+
+  &--json {
+    text-align: right;
+  }
 }
 
 .loader-container {
