@@ -4,6 +4,7 @@ const React = require('react');
 const Api = require('../../utilities/api');
 const Icon = require('watson-react-components').Icon;
 const SimilarImage = require('../SimilarImages/Image');
+const JsonLink = require('watson-react-components').JsonLink;
 
 const IndividualImage = React.createClass({
   propTypes: {
@@ -90,6 +91,9 @@ const IndividualImage = React.createClass({
               <div className="individual-item">
                 <div className="row">
                   <div className="individual-item--display">
+                    <div className="individual-item--json">
+                      <JsonLink json={this.state.data} />
+                    </div>
                     <div className="individual-item--image-container">
                       <div className="content">
                         <img
