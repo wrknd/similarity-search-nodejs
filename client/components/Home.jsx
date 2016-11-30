@@ -1,12 +1,18 @@
 const React = require('react');
 const $ = require('jquery');
-const { Header, Jumbotron, Footer } = require('watson-react-components');
+const { Header, Jumbotron, Footer, ImagePicker } = require('watson-react-components');
 
 const SimilarImages = require('./SimilarImages');
 const IndividualImage = require('./IndividualImage');
-const ImagePicker = require('./ImagePicker');
 const scrollTo = require('../utilities/scrollTo');
 const Api = require('../utilities/api');
+
+const sampleImages = [0, 1, 2, 3].map((_, i) => {
+  return {
+    url: `/images/samples/${i}.png`,
+    alt: `Sample-${i}`,
+  };
+});
 
 module.exports = React.createClass({
   getInitialState() {
@@ -35,19 +41,23 @@ module.exports = React.createClass({
     }
   },
 
-  onClassify(image) {
+  onClickTile(image, index) {
+    this.onClassify(sampleImages[index]);
+  },
+
+  onClassify(image, errorType) {
     this.setState({ imagesShown: 15 });
     Api.findSimilar(image)
     .done((data) => {
-      this.setState({ data, loading: false, error: null });
+      this.setState({ data, loading: false, error: null, fileError: null, urlError: null });
     })
     .fail((error) => {
       let errorMessage = 'There was a problem with the request, please try again';
       if (error.responseJSON && error.responseJSON.error) {
         errorMessage = error.responseJSON.error;
       }
+      this.onError(error.status === 0 ? null : errorMessage, errorType);
       this.setState({
-        error: error.status === 0 ? null : errorMessage,
         loading: false,
         data: null,
       });
@@ -56,10 +66,43 @@ module.exports = React.createClass({
     this.setState({
       loading: true,
       error: null,
+      fileError: null,
+      urlError: null,
       similarImage: null,
       selectedImage: image,
     });
     scrollTo('.similar-images');
+  },
+
+  onDropAccepted(image) {
+    const formData = new FormData();
+    formData.append('image', image);
+    this.onClassify(formData);
+    $('.dropzone').removeClass('dropzone_on-drag');
+  },
+
+  onDropRejected(image) {
+    if (image.type !== 'image/png' &&
+        image.type !== 'image/x-png' &&
+        image.type !== 'image/jpeg' &&
+        image.type !== 'image/jpg' &&
+        image.type !== 'image/gif') {
+      this.onError('Only JPGs, PNGs, and GIFs are supported', 1);
+    }
+    if (image.size > 2000000) {
+      this.onError('Ensure the image is under 2mb', 1);
+    }
+    $('.dropzone').removeClass('dropzone_on-drag');
+  },
+
+  onUrlSubmit(url) {
+    this.onClassify(url, 2);
+  },
+
+  onClosePreview() {
+    this.setState({
+      data: null,
+    });
   },
 
   onGoBackClick() {
@@ -78,8 +121,18 @@ module.exports = React.createClass({
     this.setState({ imagesShown: moreImages });
   },
 
-  onError(errorMessage) {
-    this.setState({ error: errorMessage });
+  /**
+   * errorType is 0, 1, or 2, where 0 = error, 1 = fileError, 2 = urlError
+   */
+  onError(errorMessage, errorType) {
+    if (typeof errorType === 'undefined') {
+      errorType = 0;
+    }
+    this.setState({
+      error: errorType === 0 ? errorMessage : null,
+      fileError: errorType === 1 ? errorMessage : null,
+      urlError: errorType === 2 ? errorMessage : null,
+    });
   },
 
   render() {
@@ -105,16 +158,27 @@ module.exports = React.createClass({
             <section className="_full-width-row home">
               <div className="_container _container_large">
                 <ImagePicker
-                  onClassify={this.onClassify}
+                  images={sampleImages}
+                  onClickTile={this.onClickTile}
+                  onDropAccepted={this.onDropAccepted}
+                  onDropRejected={this.onDropRejected}
+                  onUrlSubmit={this.onUrlSubmit}
+                  onClosePreview={this.onClosePreview}
                   selectedImage={this.state.data ? this.state.selectedImage : null }
                   userImage={this.state.error ? null : this.state.userImage}
-                  onError={this.onError}
                   preview={this.state.error === null}
+                  error={this.state.error}
+                  fileError={this.state.fileError}
+                  urlError={this.state.urlError}
+                  multiple={false}
+                  maxSize={2000000}
+                  accept=".png, .gif, .jpg, .jpeg,
+                    image/png, image/x-png, image/gif, image/jpeg, image/jpg"
                 />
                 <SimilarImages
                   images={this.state.data ? this.state.data.similar_images : null}
                   loading={this.state.loading}
-                  error={this.state.error}
+                  error={this.state.error || this.state.fileError || this.state.urlError}
                   onSimilarImageClick={this.onSimilarImageClick}
                   imagesShown={this.state.imagesShown}
                 />

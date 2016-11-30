@@ -48,15 +48,6 @@ function SimilarImages(prop) {
         </div>
         : null
       }
-
-      {prop.error ?
-        (
-        <div className="similar-images--error">
-          <Icon type="error" />
-          <p className="base--p service-error--message">{prop.error}</p>
-        </div>
-        ) : (null)
-      }
     </div>
   );
 }
