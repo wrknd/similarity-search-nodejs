@@ -55,6 +55,9 @@ const parseRequestParameters = (req, callback) => {
       delete params.url;
       const tmpFile = `${os.tmpdir()}/${Date.now()}.png`;
       const stream = request(req.body.url)
+      .on('error', () =>
+        callback({ error: 'Error getting the image from the URL.', code: 400 })
+      )
       .on('response', response => {
         const fileSize = response.headers['content-length'];
         if (fileSize > 2000000) {
@@ -62,11 +65,13 @@ const parseRequestParameters = (req, callback) => {
         }
       })
       .pipe(fs.createWriteStream(tmpFile));
+
       stream.on('finish', () => {
         params.image_file = fs.createReadStream(tmpFile);
         callback(null, params);
       });
       stream.on('error', callback);
+      
     }
   } else {
     // 4. image_file and url are null
