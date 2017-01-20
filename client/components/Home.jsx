@@ -142,6 +142,7 @@ module.exports = React.createClass({
           mainBreadcrumbs="Visual Recognition"
           mainBreadcrumbsUrl="http://www.ibm.com/watson/developercloud/visual-recognition.html"
           subBreadcrumbs="Similarity Search"
+          subBreadcrumbsUrl="https://similarity-search-demo.mybluemix.net"
         />
         {!this.state.similarImage ? (
           <div style={{ marginTop: '0rem' }}>
@@ -151,6 +152,7 @@ module.exports = React.createClass({
               documentation="http://www.ibm.com/watson/developercloud/doc/visual-recognition/"
               apiReference="http://www.ibm.com/watson/developercloud/visual-recognition/api/v3"
               version="Beta"
+              startInBluemix="https://console.ng.bluemix.net/registration/?target=/catalog/services/visual-recognition/"
               description="Visual Recognition’s Similarity Search provides the ability to find
               related images based on visual input and scores. This capability presents new
               possibilities to discover relevant content through image based search."
