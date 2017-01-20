@@ -69,7 +69,7 @@
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.8.0",
     "watson-developer-cloud": "^2.15.2",
-    "watson-react-components": "^0.5.4",
+    "watson-react-components": "^0.5.5",
     "watson-ui-components": "^0.6.0"
   },
   "engines": {
