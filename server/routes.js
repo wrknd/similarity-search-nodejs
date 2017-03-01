@@ -71,7 +71,6 @@ const parseRequestParameters = (req, callback) => {
         callback(null, params);
       });
       stream.on('error', callback);
-      
     }
   } else {
     // 4. image_file and url are null
@@ -136,6 +135,7 @@ router.get('/*', (req, res) => res.render('index',
   {
     react: homeHtml,
     ga: process.env.GOOGLE_ANALYTICS || 'Insert Google Analytics ID here',
+    bluemixAnalytics: process.env.BLUEMIX_ANALYTICS,
   }
 ));
 
